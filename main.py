@@ -10,8 +10,13 @@ def generate_challenge(prompt):
   """
   Generates an exercise challenge plan based on the provided prompt.
   """
-  response = model.generate(prompt=prompt)
-  return response.text()
+  try:
+    # Assuming model.generate requires only the prompt argument
+    response = model.generate(prompt=prompt)
+    return response.text()
+  except Exception as e:
+    st.error(f"Error generating challenge: {e}")
+    return None
 
 st.title("Exercise Challenge Creator")
 
