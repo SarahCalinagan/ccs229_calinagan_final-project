@@ -6,6 +6,13 @@ import google.generativeai as genai
 genai.configure(api_key=st.secrets["GOOGLE_GEMINI_KEY"])
 model = genai.GenerativeModel('gemini-pro')
 
+# Configure Streamlit page settings
+st.set_page_config(
+    page_title="Exercise Planner",
+    page_icon=":runner:",  # Favicon emoji
+
+)
+
 # Start a chat session
 chat = model.start_chat()
 
@@ -24,11 +31,11 @@ def generate_exercise_challenge(difficulty, goal, duration, exercise_types, equi
     detailed_plan = LLM_Response(initial_prompt)
     return detailed_plan
 
-st.title("Exercise Challenge Creator")
+st.title("Exercise Challenge Creator :man-lifting-weights: ")
 st.markdown("Sarah Nicole D. Calinagan - **BSCS 3B AI**")
 
 with st.sidebar:
-    st.markdown("Let's create your Exercise Plan;\
+    st.markdown("Let's create your Exercise Plan\
             :sports_medal:")
 
     difficulty = st.selectbox("Select Difficulty Level", ["Beginner", "Intermediate", "Advanced"])
@@ -43,5 +50,5 @@ with st.sidebar:
 if generate_btn and goal:
     with st.spinner("Please wait as we create your exercise plan..."):
         exercise_plan = generate_exercise_challenge(difficulty, goal, duration, exercise_types, equipment, constraints)
-        st.subheader("Your Custom Exercise Challenge Plan")
+        st.subheader(':green[Your Customized Exercise Planner]', divider='rainbow')
         st.write(exercise_plan)
