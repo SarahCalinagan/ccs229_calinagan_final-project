@@ -8,7 +8,7 @@ model = genai.GenerativeModel('gemini-pro')
 
 # Configure Streamlit page settings
 st.set_page_config(
-    page_title="Exercise Planner",
+    page_title="FitQuestBOT",
     page_icon=":runner:",  # Favicon emoji
 
 )
@@ -31,8 +31,8 @@ def generate_exercise_challenge(difficulty, goal, duration, exercise_types, equi
     detailed_plan = LLM_Response(initial_prompt)
     return detailed_plan
 
-st.title("Exercise Challenge Creator :man-lifting-weights: ")
-st.markdown("Sarah Nicole D. Calinagan - **BSCS 3B AI**")
+st.title("FitQuestBOT - *Exercise Challenge Creator* :man-lifting-weights: ")
+st.markdown("Sarah Nicole D. Calinagan - **BSCS 3B AI**" , divider='rainbow')
 
 with st.sidebar:
     st.markdown("Let's create your Exercise Plan\
