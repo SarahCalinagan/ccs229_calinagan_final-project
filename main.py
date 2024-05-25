@@ -13,36 +13,44 @@ import google.generativeai as genai
 # Initialize Gemini-Pro
 genai.configure(api_key=st.secrets["GOOGLE_GEMINI_KEY"])
 model = genai.GenerativeModel('gemini-pro')
-chat = model.start_chat()
 
-def LLM_Response(question):
-    response = chat.send_message(question, stream=True)
-    return response
-
-st.title("Creative Text Generator")
-
-# Level 1 Prompt: Specify the Genre
-st.header("Level 1: Specify the Genre")
-genre_input = st.text_input("Enter a genre (e.g., Sci-Fi, Fantasy, Mystery):")
-
-# Level 2 Prompt: Describe the Scene
-st.header("Level 2: Describe the Scene")
-scene_description = st.text_area("Describe the scene or scenario:")
-
-# Level 3 Prompt: Introduce a Character
-st.header("Level 3: Introduce a Character")
-character_name = st.text_input("Enter the character's name:")
-character_description = st.text_area("Describe the character:")
-
-# Generate Text
-btn = st.button("Generate")
-if btn and genre_input and scene_description and character_name and character_description:
-    prompt = f"In a {genre_input.lower()} setting, {scene_description}. "
-    prompt += f"There was a character named {character_name} who {character_description}. "
+# Define function for multi-level prompting
+def multi_level_prompt():
+    # Level 1 prompt
+    destination = st.text_input("Enter your vacation destination:")
     
-    result = LLM_Response(prompt)
+    # Level 2 prompt
+    duration = st.number_input("Enter the duration of your stay (in days):", min_value=1, max_value=365)
     
-    # Display Response
-    st.subheader("Generated Text:")
-    for word in result:
-        st.text(word.text)
+    # Level 3 prompt
+    activities = st.multiselect("Select your interests and activities:", ["Adventure", "Relaxation", "Culture", "Nature", "Food", "Shopping"])
+    
+    return destination, duration, activities
+
+# Generate vacation itinerary based on prompts
+def generate_itinerary(destination, duration, activities):
+    # Create a prompt for the model
+    activities_str = ", ".join(activities)
+    prompt = f"Create a {duration}-day vacation itinerary for {destination} with a focus on {activities_str}."
+    
+    # Generate response using the Gemini-Pro model
+    response = model.generate_text(prompt=prompt)
+    return response['generated_text']
+
+# Main function to run the app
+def main():
+    # Multi-level prompting
+    destination, duration, activities = multi_level_prompt()
+    
+    # Generate vacation itinerary
+    if st.button("Generate Itinerary"):
+        # Display loading message
+        with st.spinner("Generating itinerary..."):
+            # Call function to generate itinerary
+            itinerary = generate_itinerary(destination, duration, activities)
+            # Display generated itinerary
+            st.success("Here's your vacation itinerary:")
+            st.write(itinerary)
+
+if __name__ == "__main__":
+    main()
