@@ -13,35 +13,36 @@ import google.generativeai as genai
 # Initialize Gemini-Pro
 genai.configure(api_key=st.secrets["GOOGLE_GEMINI_KEY"])
 model = genai.GenerativeModel('gemini-pro')
+chat = model.start_chat()
 
-# Gemini uses 'model' for assistant; Streamlit uses 'assistant'
-def role_to_streamlit(role):
-  if role == "model":
-    return "assistant"
-  else:
-    return role
+def LLM_Response(question):
+    response = chat.send_message(question, stream=True)
+    return response
 
-# Add a Gemini Chat history object to Streamlit session state
-if "chat" not in st.session_state:
-    st.session_state.chat = model.start_chat(history = [])
+st.title("Creative Text Generator")
 
-# Display Form Title
-st.set_page_config(page_title="AskME")
-st.title("AskME: The Knowledge Well")
+# Level 1 Prompt: Specify the Genre
+st.header("Level 1: Specify the Genre")
+genre_input = st.text_input("Enter a genre (e.g., Sci-Fi, Fantasy, Mystery):")
 
-# Display chat messages from history above current input box
-for message in st.session_state.chat.history:
-    with st.chat_message(role_to_streamlit(message.role)):
-        st.markdown(message.parts[0].text)
+# Level 2 Prompt: Describe the Scene
+st.header("Level 2: Describe the Scene")
+scene_description = st.text_area("Describe the scene or scenario:")
 
-# Accept user's next message, add to context, resubmit context to Gemini
-if prompt := st.chat_input("I possess a well of knowledge. What would you like to know?"):
-    # Display user's last message
-    st.chat_message("user").markdown(prompt)
+# Level 3 Prompt: Introduce a Character
+st.header("Level 3: Introduce a Character")
+character_name = st.text_input("Enter the character's name:")
+character_description = st.text_area("Describe the character:")
+
+# Generate Text
+btn = st.button("Generate")
+if btn and genre_input and scene_description and character_name and character_description:
+    prompt = f"In a {genre_input.lower()} setting, {scene_description}. "
+    prompt += f"There was a character named {character_name} who {character_description}. "
     
-    # Send user entry to Gemini and read the response
-    response = st.session_state.chat.send_message(prompt) 
+    result = LLM_Response(prompt)
     
-    # Display last 
-    with st.chat_message("assistant"):
-        st.markdown(response.text)
+    # Display Response
+    st.subheader("Generated Text:")
+    for word in result:
+        st.text(word.text)
