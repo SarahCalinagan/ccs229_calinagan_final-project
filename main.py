@@ -32,7 +32,8 @@ def generate_exercise_challenge(difficulty, goal, duration, exercise_types, equi
     return detailed_plan
 
 st.title("FitQuestBOT - *Exercise Challenge Creator* :man-lifting-weights: ")
-st.markdown("Sarah Nicole D. Calinagan - **BSCS 3B AI**" , divider='rainbow')
+st.markdown("Sarah Nicole D. Calinagan - **BSCS 3B AI**")
+st.divider()
 
 with st.sidebar:
     st.markdown("Let's create your Exercise Plan\
