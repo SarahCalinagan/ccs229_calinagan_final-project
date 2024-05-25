@@ -42,7 +42,7 @@ with st.sidebar:
 
     response = LLM_Response(chat, challenge_prompt)
 
-    # Display the generated challenge plan
+    # Display the generated challenge plan (moved outside sidebar)
     st.subheader("Your Personalized Challenge:")
     for word in response:
       st.write(word.text)
