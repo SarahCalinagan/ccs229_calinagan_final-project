@@ -7,16 +7,15 @@ genai.configure(api_key=st.secrets["GOOGLE_GEMINI_KEY"])
 model = genai.GenerativeModel('gemini-pro')
 
 def generate_challenge(prompt):
-  """
-  Generates an exercise challenge plan based on the provided prompt.
-  """
-  try:
-    # Assuming model.generate requires only the prompt argument
-    response = model.generate(prompt=prompt)
-    return response.text()
-  except Exception as e:
-    st.error(f"Error generating challenge: {e}")
-    return None
+        """
+        Generates an exercise challenge plan based on the provided prompt.
+        """
+        try:
+            response = model.generate(prompt=prompt)
+            return response.text()
+        except Exception as e:
+            st.error(f"Error generating challenge: {e}")
+            return None
 
 st.title("Exercise Challenge Creator")
 
