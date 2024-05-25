@@ -6,43 +6,34 @@ import google.generativeai as genai
 genai.configure(api_key=st.secrets["GOOGLE_GEMINI_KEY"])
 model = genai.GenerativeModel('gemini-pro')
 
-def start_chat():
-  """Starts a new chat session with the model."""
-  chat = model.start_chat()
-  return chat
+# Start a chat session
+chat = model.start_chat()
 
-def LLM_Response(chat, question):
-  """Sends a message to the ongoing chat and returns the response."""
-  response = chat.send_message(question, stream=True)
-  return response
+def LLM_Response(question):
+    response = chat.send_message(question, stream=True)
+    result = ""
+    for word in response:
+        result += word.text
+    return result
+
+def generate_exercise_challenge(difficulty, goal, duration):
+    initial_prompt = f"Create a {difficulty} exercise challenge plan aimed at {goal} over {duration}."
+    detailed_plan = LLM_Response(initial_prompt)
+    return detailed_plan
 
 st.title("Detailed Exercise Challenge Creator")
 
-# Create sidebar for prompts
 with st.sidebar:
-  st.header("Challenge Design")
+    st.header("Customize Your Exercise Challenge")
 
-  # Prompt 1: Goal Selection
-  goal_selected = st.selectbox("What is your fitness goal?",
-                              ("Build Muscle", "Lose Fat", "Improve Endurance", "Increase Flexibility"))
+    difficulty = st.selectbox("Select Difficulty Level", ["Beginner", "Intermediate", "Advanced"])
+    goal = st.text_input("Enter Your Fitness Goal (e.g., weight loss, muscle gain, endurance)")
+    duration = st.selectbox("Select Challenge Duration", ["1 week", "2 weeks", "1 month", "3 months"])
 
-  # Prompt 2: Duration Selection
-  duration_selected = st.selectbox("Challenge Duration", ("1 Week", "2 Weeks", "4 Weeks"))
+    generate_btn = st.button("Generate Exercise Plan")
 
-  # Prompt 3 (Optional): Equipment Availability
-  equipment_available = st.checkbox("Do you have access to gym equipment?")
-
-  # Button to trigger challenge generation
-  if st.button("Generate Challenge"):
-    chat = start_chat()  # Start a new chat for each challenge
-    challenge_prompt = f"Create a detailed {duration_selected} exercise challenge plan to help me achieve my goal of {goal_selected}."
-
-    if equipment_available:
-      challenge_prompt += " I have access to gym equipment."
-
-    response = LLM_Response(chat, challenge_prompt)
-
-    # Display the generated challenge plan (moved outside sidebar)
-    st.subheader("Your Personalized Challenge:")
-    for word in response:
-      st.write(word.text)
+if generate_btn and goal:
+    with st.spinner("Generating your exercise plan..."):
+        exercise_plan = generate_exercise_challenge(difficulty, goal, duration)
+        st.subheader("Your Custom Exercise Challenge Plan")
+        st.write(exercise_plan)
