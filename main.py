@@ -6,35 +6,43 @@ import google.generativeai as genai
 genai.configure(api_key=st.secrets["GOOGLE_GEMINI_KEY"])
 model = genai.GenerativeModel('gemini-pro')
 
-def generate_challenge(prompt):
-        """
-        Generates an exercise challenge plan based on the provided prompt.
-        """
-        try:
-            response = model.generate(prompt=prompt)
-            return response.text()
-        except Exception as e:
-            st.error(f"Error generating challenge: {e}")
-            return None
+def start_chat():
+  """Starts a new chat session with the model."""
+  chat = model.start_chat()
+  return chat
 
-st.title("Exercise Challenge Creator")
+def LLM_Response(chat, question):
+  """Sends a message to the ongoing chat and returns the response."""
+  response = chat.send_message(question, stream=True)
+  return response
 
-# Sidebar for user input
+st.title("Detailed Exercise Challenge Creator")
+
+# Create sidebar for prompts
 with st.sidebar:
-  st.header("Challenge Details")
-  focus_area = st.selectbox("Focus Area", ["Cardio", "Strength Training", "Flexibility"])
-  duration = st.number_input("Duration (Weeks)", min_value=1)
-  frequency = st.radio("Frequency", ("Daily", "Weekly"))
-  difficulty = st.selectbox("Difficulty", ["Beginner", "Intermediate", "Advanced"])
-  additional_info = st.text_area("Additional Information (Optional)")
+  st.header("Challenge Design")
 
-  # Combine user input into a prompt
-  prompt = f"Create a detailed {duration}-week {frequency} {focus_area} exercise challenge plan for a {difficulty} level. "
-  if additional_info:
-    prompt += f" Additional considerations: {additional_info}"
+  # Prompt 1: Goal Selection
+  goal_selected = st.selectbox("What is your fitness goal?",
+                              ("Build Muscle", "Lose Fat", "Improve Endurance", "Increase Flexibility"))
 
-  # Generate challenge plan
+  # Prompt 2: Duration Selection
+  duration_selected = st.selectbox("Challenge Duration", ("1 Week", "2 Weeks", "4 Weeks"))
+
+  # Prompt 3 (Optional): Equipment Availability
+  equipment_available = st.checkbox("Do you have access to gym equipment?")
+
+  # Button to trigger challenge generation
   if st.button("Generate Challenge"):
-    challenge_plan = generate_challenge(prompt)
-    st.write("## Challenge Plan:")
-    st.text(challenge_plan)
+    chat = start_chat()  # Start a new chat for each challenge
+    challenge_prompt = f"Create a detailed {duration_selected} exercise challenge plan to help me achieve my goal of {goal_selected}."
+
+    if equipment_available:
+      challenge_prompt += " I have access to gym equipment."
+
+    response = LLM_Response(chat, challenge_prompt)
+
+    # Display the generated challenge plan
+    st.subheader("Your Personalized Challenge:")
+    for word in response:
+      st.write(word.text)
