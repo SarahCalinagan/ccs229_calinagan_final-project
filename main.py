@@ -1,3 +1,11 @@
+"""
+SARAH NICOLE D. CALINAGAN
+BSCS 3B-AI
+
+CCS 229 - INFORMATION SYSTEM
+FINAL PROJECT
+"""
+
 import streamlit as st
 import os
 import google.generativeai as genai
@@ -33,7 +41,6 @@ def generate_exercise_challenge(difficulty, goal, duration, exercise_types, equi
 
 st.title("FitQuestBOT - *Exercise Challenge Creator* :man-lifting-weights: ")
 st.markdown("Sarah Nicole D. Calinagan - **BSCS 3B AI**")
-st.divider()
 
 with st.sidebar:
     st.markdown("Let's create your Exercise Plan\
