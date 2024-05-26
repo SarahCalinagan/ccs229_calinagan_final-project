@@ -18,11 +18,12 @@ The application is written in Python and utilizes Streamlit for creating the use
 
 ## Functionalities
 
+- **Secure API Key Management**: The Google API key is securely placed inside the streamlit 'secret' tab in app settings.
 - **Multi-Level Prompting**: Users are guided through a series of prompts to refine the creative direction of their exercise challenge plan.
 - **Personalization**: Users can specify their fitness goals, preferred exercise types, available equipment, and any constraints or preferences they have.
 - **Creative Exercise Plans**: The system generates detailed exercise challenge plans tailored to the user's inputs, providing a comprehensive workout schedule.
 - **Interactive Interface**: The Streamlit interface makes the interaction intuitive, allowing users to customize their exercise plans effortlessly.
-- **Secure API Key Management**: The Google API key is securely palced inside the streamlit 'secret' tab in app settings.
+
 
 ## Link
 - **Streamlit**: https://calinagan-ccs229-final-project.streamlit.app/
